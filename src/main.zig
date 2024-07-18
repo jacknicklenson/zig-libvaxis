@@ -1,4 +1,6 @@
 const std = @import("std");
+const zigimg = @import("zigimg");
+const yazap = @import("yazap");
 const vaxis = @import("vaxis");
 const Cell = vaxis.Cell;
 const TextInput = vaxis.widgets.TextInput;
@@ -24,6 +26,12 @@ pub fn main() !void {
         }
     }
     const alloc = gpa.allocator();
+
+    var app = yazap.App.init(alloc, "libvaxis", "Experimenting");
+    defer app.deinit();
+
+    const img = try zigimg.Image.fromFilePath(alloc, "sample.png");
+    defer img.deinit();
 
     // Initialize a tty
     var tty = try vaxis.Tty.init();

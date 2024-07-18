@@ -36,6 +36,18 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
+    const yazap = b.dependency("yazap", .{
+        .target = target,
+        .optimize = optimize,
+    });
+    exe.root_module.addImport("yazap", yazap.module("yazap"));
+
+    const zigimg = b.dependency("zigimg", .{
+        .target = target,
+        .optimize = optimize,
+    });
+    exe.root_module.addImport("zigimg", zigimg.module("zigimg"));
+
     const libvaxis = b.dependency("vaxis", .{
         .target = target,
         .optimize = optimize,

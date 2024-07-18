@@ -55,6 +55,14 @@
         //    // actually used.
         //    .lazy = false,
         //},
+        .zigimg = .{
+            .url = "https://github.com/zigimg/zigimg/archive/d9dbbe2.tar.gz",
+            .hash = "122013646f7038ecc71ddf8a0d7de346d29a6ec40140af57f838b0a975c69af512b0",
+        },
+        .yazap = .{
+            .url = "git+https://github.com/prajwalch/yazap#55444b9d1a3688b11c47adeef750e7c80a03bae3",
+            .hash = "1220c09706d5fd6247dcca7ed84e8b184f8c53a7891a6cf49e98b36d4752c0f1d8e5",
+        },
     },
 
     // Specifies the set of files and directories that are included in this package.
