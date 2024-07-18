@@ -18,13 +18,7 @@ const Event = union(enum) {
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer {
-        const deinit_status = gpa.deinit();
-        //fail test; can't try in defer as defer is executed after we return
-        if (deinit_status == .leak) {
-            std.log.err("memory leak", .{});
-        }
-    }
+    defer if (gpa.detectLeaks()) std.log.err("Memory Leak Detected!", .{});
     const alloc = gpa.allocator();
 
     var app = yazap.App.init(alloc, "libvaxis", "Experimenting");
