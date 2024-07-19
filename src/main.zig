@@ -24,7 +24,18 @@ pub fn main() !void {
     var app = yazap.App.init(alloc, "libvaxis", "Experimenting");
     defer app.deinit();
 
-    const img = try zigimg.Image.fromFilePath(alloc, "sample.png");
+    var libvaxis = app.rootCommand();
+
+    try libvaxis.addArg(yazap.Arg.booleanOption("version", 'v', "Print version number"));
+    try libvaxis.addArg(yazap.Arg.singleValueOption("file", 'f', "File to asciify"));
+    const matches = try app.parseProcess();
+
+    if (matches.containsArg("version")) {
+        std.log.info("v0.1.0", .{});
+        return;
+    }
+    const file = matches.getSingleValue("file") orelse @panic("Usage: zig-libvaxis <file>\n");
+    var img = try zigimg.Image.fromFilePath(alloc, file);
     defer img.deinit();
 
     // Initialize a tty
