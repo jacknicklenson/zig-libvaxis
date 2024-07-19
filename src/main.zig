@@ -29,7 +29,10 @@ pub fn main() !void {
     try libvaxis.addArg(yazap.Arg.booleanOption("version", 'v', "Print version number"));
     try libvaxis.addArg(yazap.Arg.singleValueOption("file", 'f', "File to asciify"));
     const matches = try app.parseProcess();
-
+    if (!matches.containsArgs()) {
+        try app.displayHelp();
+        return;
+    }
     if (matches.containsArg("version")) {
         std.log.info("v0.1.0", .{});
         return;
