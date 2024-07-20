@@ -82,24 +82,27 @@ pub fn main() !void {
         const ch = img.height / h;
         const total_cell_pixel = cw * ch;
         var g = std.ArrayList(std.ArrayList(usize)).init(alloc);
+        defer {
+            for (0..h) |j| g.items[j].deinit();
+            g.deinit();
+        }
         for (0..h) |j| {
             try g.append(std.ArrayList(usize).init(alloc));
             for (0..w) |_| {
                 try g.items[j].append(0);
             }
         }
-        // var grid: [h][w]usize = .{.{0} ** w} ** h;
         for (grayscale_img.pixels.rgb24, 0..) |p, idx| {
             const y = idx / img.width;
             const cy = y / ch;
             const cx = idx / cw;
-            g.items[cy].items[cx] += p.r; // TODO: index overflow
+            g.items[cy % h].items[cx % w] += p.r;
         }
+        win.clear();
         for (0..h) |y| {
             for (0..w) |x| {
                 g.items[y].items[x] /= total_cell_pixel;
                 const avg = g.items[y].items[x];
-                // grid[y][x] /= total_cell_pixel;
                 const style: vaxis.Style = .{
                     .fg = .{ .rgb = [3]u8{ @truncate(avg), @truncate(avg), @truncate(avg) } },
                     .bg = .{ .rgb = [3]u8{ 0, 0, 0 } },
@@ -107,10 +110,6 @@ pub fn main() !void {
                 _ = try win.printSegment(.{ .style = style, .text = "·" }, .{});
             }
         }
-
-        win.clear();
-        win.hideCursor();
-
         try vx.render(tty.anyWriter());
     }
 }
