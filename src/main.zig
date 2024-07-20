@@ -38,7 +38,8 @@ pub fn main() !void {
     var img = try zigimg.Image.fromFilePath(alloc, file);
     defer img.deinit();
 
-    var grayscale_img = try zigimg.Image.create(alloc, 400, 300, zigimg.PixelFormat.rgb24);
+    try img.convert(.rgb24);
+    var grayscale_img = try zigimg.Image.create(alloc, img.width, img.height, zigimg.PixelFormat.rgb24);
     defer grayscale_img.deinit();
     for (img.pixels.rgb24, 0..) |p, idx| {
         grayscale_img.pixels.rgb24[idx] = zigimg.color.Rgb24.initRgb(p.g, p.g, p.g);
@@ -99,6 +100,8 @@ pub fn main() !void {
             g.items[cy % h].items[cx % w] += p.r;
         }
         win.clear();
+        var segments = std.ArrayList(vaxis.Segment).init(alloc);
+        defer segments.deinit();
         for (0..h) |y| {
             for (0..w) |x| {
                 g.items[y].items[x] /= total_cell_pixel;
@@ -107,9 +110,10 @@ pub fn main() !void {
                     .fg = .{ .rgb = [3]u8{ @truncate(avg), @truncate(avg), @truncate(avg) } },
                     .bg = .{ .rgb = [3]u8{ 0, 0, 0 } },
                 };
-                _ = try win.printSegment(.{ .style = style, .text = "·" }, .{});
+                try segments.append(.{ .style = style, .text = "·" });
             }
         }
+        _ = try win.print(segments.items, .{});
         try vx.render(tty.anyWriter());
     }
 }
