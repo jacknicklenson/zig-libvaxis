@@ -96,7 +96,7 @@ pub fn main() !void {
         for (grayscale_img.pixels.rgb24, 0..) |p, idx| {
             const y = idx / img.width;
             const cy = y / ch;
-            const cx = idx / cw;
+            const cx = (idx % img.width) / cw;
             g.items[cy % h].items[cx % w] += p.r;
         }
         win.clear();
