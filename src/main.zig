@@ -6,8 +6,6 @@ const Cell = vaxis.Cell;
 const TextInput = vaxis.widgets.TextInput;
 const border = vaxis.widgets.border;
 
-const chars_brightness = " `.-':_,^=;><+!rc*/z?sLTv)J7(|Fi{C}fI31tlu[neoZ5Yxjya]2ESwqkP6h9d4VpOGbUAKXHm8RD#$Bg0MNWQ%&@";
-
 const Event = union(enum) {
     key_press: vaxis.Key,
     winsize: vaxis.Winsize,
