@@ -35,7 +35,11 @@ pub fn main() !void {
     defer img.deinit();
 
     try img.convert(.rgb24);
-    const render = try root.tuify(alloc, img);
+    var render = try root.tuify(alloc, img);
+    defer switch (render) {
+        .single_frame => |*s| s.deinit(),
+        .multi_frames => |m| for (m) |*me| me.deinit(),
+    };
 
     var tty = try vaxis.Tty.init();
     defer tty.deinit();
