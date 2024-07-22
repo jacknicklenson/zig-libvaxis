@@ -2,9 +2,7 @@ const std = @import("std");
 const zigimg = @import("zigimg");
 const yazap = @import("yazap");
 const vaxis = @import("vaxis");
-const Cell = vaxis.Cell;
-const TextInput = vaxis.widgets.TextInput;
-const border = vaxis.widgets.border;
+const root = @import("root.zig");
 
 const Event = union(enum) {
     key_press: vaxis.Key,
@@ -37,11 +35,7 @@ pub fn main() !void {
     defer img.deinit();
 
     try img.convert(.rgb24);
-    var grayscale_img = try zigimg.Image.create(alloc, img.width, img.height, zigimg.PixelFormat.rgb24);
-    defer grayscale_img.deinit();
-    for (img.pixels.rgb24, 0..) |p, idx| {
-        grayscale_img.pixels.rgb24[idx] = zigimg.color.Rgb24.initRgb(p.g, p.g, p.g);
-    }
+    const render = try root.tuify(alloc, img);
 
     var tty = try vaxis.Tty.init();
     defer tty.deinit();
@@ -73,45 +67,7 @@ pub fn main() !void {
             },
             .winsize => |ws| try vx.resize(alloc, tty.anyWriter(), ws),
         }
-
         const win = vx.window();
-        const w = win.width;
-        const h = win.height;
-        const cw = img.width / w;
-        const ch = img.height / h;
-        const total_cell_pixel = cw * ch;
-        var g = std.ArrayList(std.ArrayList(usize)).init(alloc);
-        defer {
-            for (0..h) |j| g.items[j].deinit();
-            g.deinit();
-        }
-        for (0..h) |j| {
-            try g.append(std.ArrayList(usize).init(alloc));
-            for (0..w) |_| {
-                try g.items[j].append(0);
-            }
-        }
-        for (grayscale_img.pixels.rgb24, 0..) |p, idx| {
-            const y = idx / img.width;
-            const cy = y / ch;
-            const cx = (idx % img.width) / cw;
-            g.items[cy % h].items[cx % w] += p.r;
-        }
-        win.clear();
-        var segments = std.ArrayList(vaxis.Segment).init(alloc);
-        defer segments.deinit();
-        for (0..h) |y| {
-            for (0..w) |x| {
-                g.items[y].items[x] /= total_cell_pixel;
-                const avg = g.items[y].items[x];
-                const style: vaxis.Style = .{
-                    .fg = .{ .rgb = [3]u8{ @truncate(avg), @truncate(avg), @truncate(avg) } },
-                    .bg = .{ .rgb = [3]u8{ 0, 0, 0 } },
-                };
-                try segments.append(.{ .style = style, .text = "·" });
-            }
-        }
-        _ = try win.print(segments.items, .{});
-        try vx.render(tty.anyWriter());
+        try root.render(alloc, win, img, render, tty, &vx);
     }
 }
