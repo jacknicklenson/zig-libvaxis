@@ -12,10 +12,10 @@ fn parse_anim(alloc: std.mem.Allocator, img: zigimg.Image) !Rendered {
     for (img.animation.frames.items) |f| {
         var grayscale_img = try zigimg.Image.create(alloc, img.width, img.height, .rgb24);
         defer grayscale_img.deinit();
-        for (f.pixels.rgb24, 0..) |p, idx| {
+        for (f.pixels.indexed8.palette, 0..) |p, idx| {
             grayscale_img.pixels.rgb24[idx] = zigimg.color.Rgb24.initRgb(p.g, p.g, p.g);
-            try frame.append(grayscale_img);
         }
+        try frame.append(grayscale_img);
     }
     return .{ .multi_frames = try frame.toOwnedSlice() };
 }
@@ -54,9 +54,9 @@ pub fn render(alloc: std.mem.Allocator, win: vaxis.Window, img: zigimg.Image, tu
             }
             for (mf) |simg| {
                 for (simg.pixels.rgb24, 0..) |p, idx| {
-                    const y = idx / img.width;
+                    const y = idx / simg.width;
                     const cy = y / ch;
-                    const cx = (idx % img.width) / cw;
+                    const cx = (idx % simg.width) / cw;
                     g.items[cy % h].items[cx % w] += p.r;
                 }
                 win.clear();
