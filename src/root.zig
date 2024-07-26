@@ -2,8 +2,8 @@ const std = @import("std");
 const zigimg = @import("zigimg");
 const vaxis = @import("vaxis");
 
-pub const chars_brightness = " `.-':_,^=;><+!rc*/z?sLTv)J7(|Fi{C}fI31tlu[neoZ5Yxjya]2ESwqkP6h9d4VpOGbUAKXHm8RD#$Bg0MNWQ%&@";
-
+// pub const chars_brightness = " `.-':_,^=;><+!rc*/z?sLTv)J7(|Fi{C}fI31tlu[neoZ5Yxjya]2ESwqkP6h9d4VpOGbUAKXHm8RD#$Bg0MNWQ%&@";
+pub const chars_brightness = " .'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
 pub const Rendered = union(enum) {
     single_frame: zigimg.Image,
     multi_frames: []zigimg.Image,
@@ -109,12 +109,13 @@ pub fn render(alloc: std.mem.Allocator, win: vaxis.Window, img: zigimg.Image, tu
             for (0..h) |y| {
                 for (0..w) |x| {
                     g.items[y].items[x] /= total_cell_pixel;
-                    const avg = g.items[y].items[x];
+                    const avg = g.items[y].items[x] % 256;
+                    const corresponding_ascii = @as(u8, @intFromFloat(@floor(@as(f32, @as(f32, @floatFromInt(avg)) / 256) * chars_brightness.len)));
                     const style: vaxis.Style = .{
-                        .fg = .{ .rgb = [3]u8{ @truncate(avg), @truncate(avg), @truncate(avg) } },
-                        .bg = .{ .rgb = [3]u8{ 0, 0, 0 } },
+                        .fg = .default,
+                        .bg = .default,
                     };
-                    try segments.append(.{ .style = style, .text = "·" });
+                    try segments.append(.{ .style = style, .text = chars_brightness[corresponding_ascii .. corresponding_ascii + 1] });
                 }
             }
             _ = try win.print(segments.items, .{});
