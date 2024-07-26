@@ -2,6 +2,8 @@ const std = @import("std");
 const zigimg = @import("zigimg");
 const vaxis = @import("vaxis");
 
+pub const chars_brightness = " `.-':_,^=;><+!rc*/z?sLTv)J7(|Fi{C}fI31tlu[neoZ5Yxjya]2ESwqkP6h9d4VpOGbUAKXHm8RD#$Bg0MNWQ%&@";
+
 pub const Rendered = union(enum) {
     single_frame: zigimg.Image,
     multi_frames: []zigimg.Image,
