@@ -70,7 +70,7 @@ pub fn render(alloc: std.mem.Allocator, win: vaxis.Window, img: zigimg.Image, tu
                             .fg = .{ .rgb = [3]u8{ @truncate(avg), @truncate(avg), @truncate(avg) } },
                             .bg = .{ .rgb = [3]u8{ 0, 0, 0 } },
                         };
-                        try segments.append(.{ .style = style, .text = "·" });
+                        try segments.append(.{ .style = style, .text = "." });
                     }
                 }
                 _ = try win.print(segments.items, .{});
@@ -112,7 +112,7 @@ pub fn render(alloc: std.mem.Allocator, win: vaxis.Window, img: zigimg.Image, tu
                         .fg = .{ .rgb = [3]u8{ @truncate(avg), @truncate(avg), @truncate(avg) } },
                         .bg = .{ .rgb = [3]u8{ 0, 0, 0 } },
                     };
-                    try segments.append(.{ .style = style, .text = "·" });
+                    try segments.append(.{ .style = style, .text = "." });
                 }
             }
             _ = try win.print(segments.items, .{});
