@@ -36,8 +36,8 @@ pub fn tuify(alloc: std.mem.Allocator, img: zigimg.Image) !Rendered {
 pub fn render(alloc: std.mem.Allocator, win: vaxis.Window, img: zigimg.Image, tuified: Rendered, tty: vaxis.Tty, vx: *vaxis.Vaxis) !void {
     switch (tuified) {
         .multi_frames => |mf| {
-            if (mf[0].width >= win.width) std.debug.panic("image width ({d}) is smaller than terminal cell width ({d}).", .{ mf[0].width, win.width });
-            if (mf[0].height >= win.height) std.debug.panic("image height ({d}) is smaller than terminal cell height ({d}).", .{ mf[0].height, win.height });
+            if (mf[0].width < win.width) std.debug.panic("image width ({d}) is smaller than terminal cell width ({d}). It should be bigger or equal!", .{ mf[0].width, win.width });
+            if (mf[0].height < win.height) std.debug.panic("image height ({d}) is smaller than terminal cell height ({d}). It should be bigger or equal!", .{ mf[0].height, win.height });
             const w = win.width;
             const h = win.height;
             const cw = mf[0].width / w;
@@ -81,8 +81,8 @@ pub fn render(alloc: std.mem.Allocator, win: vaxis.Window, img: zigimg.Image, tu
             }
         },
         .single_frame => |simg| {
-            if (simg.width >= win.width) std.debug.panic("image width ({d}) is smaller than terminal cell width ({d}).", .{ simg.width, win.width });
-            if (simg.height >= win.height) std.debug.panic("image height ({d}) is smaller than terminal cell height ({d}).", .{ simg.height, win.height });
+            if (simg.width < win.width) std.debug.panic("image width ({d}) is smaller than terminal cell width ({d}). It should be bigger or equal!", .{ simg.width, win.width });
+            if (simg.height < win.height) std.debug.panic("image height ({d}) is smaller than terminal cell height ({d}). It should be bigger or equal!", .{ simg.height, win.height });
             const w = win.width;
             const h = win.height;
             const cw = simg.width / w;
