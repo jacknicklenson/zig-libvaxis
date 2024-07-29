@@ -9,6 +9,7 @@ pub const Rendered = union(enum) {
 
 fn parse_anim(alloc: std.mem.Allocator, img: zigimg.Image) !Rendered {
     var frame = std.ArrayList(zigimg.Image).init(alloc);
+    errdefer frame.deinit();
     for (img.animation.frames.items) |f| {
         var grayscale_img = try zigimg.Image.create(alloc, img.width, img.height, .rgb24);
         defer grayscale_img.deinit();
