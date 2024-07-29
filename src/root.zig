@@ -83,8 +83,10 @@ pub fn render(alloc: std.mem.Allocator, win: vaxis.Window, img: zigimg.Image, tu
             }
         },
         .single_frame => |simg| {
-            if (simg.width < win.width) std.debug.panic("image width ({d}) is smaller than terminal cell width ({d}). It should be bigger or equal!", .{ simg.width, win.width });
-            if (simg.height < win.height) std.debug.panic("image height ({d}) is smaller than terminal cell height ({d}). It should be bigger or equal!", .{ simg.height, win.height });
+            if (simg.width < win.width)
+                std.debug.panic("image width ({d}) is smaller than terminal cell width ({d}). It should be bigger or equal!", .{ simg.width, win.width });
+            if (simg.height < win.height)
+                std.debug.panic("image height ({d}) is smaller than terminal cell height ({d}). It should be bigger or equal!", .{ simg.height, win.height });
             const w = win.width;
             const h = win.height;
             const cw = simg.width / w;
