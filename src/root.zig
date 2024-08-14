@@ -7,7 +7,7 @@ pub const Rendered = union(enum) {
     multi_frames: []zigimg.Image,
 };
 
-fn parse_anim(alloc: std.mem.Allocator, img: zigimg.Image) !Rendered {
+fn parseAnim(alloc: std.mem.Allocator, img: zigimg.Image) !Rendered {
     var frame = std.ArrayList(zigimg.Image).init(alloc);
     errdefer frame.deinit();
     for (img.animation.frames.items) |f| {
@@ -23,7 +23,7 @@ fn parse_anim(alloc: std.mem.Allocator, img: zigimg.Image) !Rendered {
 
 pub fn tuify(alloc: std.mem.Allocator, img: zigimg.Image) !Rendered {
     if (img.isAnimation()) {
-        return parse_anim(alloc, img);
+        return parseAnim(alloc, img);
     } else {
         var grayscale_img = try zigimg.Image.create(alloc, img.width, img.height, .rgb24);
         for (img.pixels.rgb24, 0..) |p, idx| {
